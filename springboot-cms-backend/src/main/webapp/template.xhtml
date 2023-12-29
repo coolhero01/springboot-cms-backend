@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:o="http://omnifaces.org/ui">
+	
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>#{loginBean.shopUser.hostName}</title>
+	
+	<style type="text/css">
+	.accordionMenu .ui-menu {
+		width: 100% !important;
+	}
+	
+	.accordionMenu .ui-accordion-content {
+		width: 92% !important;
+		padding: 0 !important;
+		overflow: inherit !important;
+	}
+	
+	.accordionMenu2 .ui-menu {
+		width: 100% !important;
+		background-color: #e0ffff;
+	}
+	
+	.accordionMenu2 .ui-accordion-content {
+		width: 92% !important;
+		padding: 0 !important;
+		overflow: inherit !important;
+		background-color: #e0ffff;
+	}
+	
+	.preformatted {
+	    white-space: pre-wrap;
+	    word-break: break-all;
+	}
+	  
+	.ui-chkbox .ui-chkbox-box{
+		width:15px !important;  
+		height:15px !important;
+	}
+	.ui-widget {
+		font-size: 11px !important;
+		font-style: normal;
+		font-family: "Arial", Georgia, Serif;
+	}
+	/* default/non-selected menuitem style */
+	.orders-menuitem-text .ui-menuitem-text {
+		font-size: 90% !important;
+	}
+	
+	/* selected menuitem style */
+	.orders-menuitem-selected .ui-menuitem-text {
+		font-size: 95% !important;
+		font-weight: bolder !important;
+	}
+	
+	.ui-inputfield[disabled],.ui-inputfield[disabled].ui-state-focus {
+		border: 0 !important;
+		box-shadow: none !important;
+		outline: 0 !important;
+	}
+	  
+	.customDateField input {
+  		width: 60px;
+	}
+	
+	.customDateField65 input {
+  		width: 66px;
+	}
+	
+	.customDateField80 input {
+  		width: 80px;
+	}
+	
+	
+	.table-va-top {
+  		 vertical-align: top;
+	}
+	
+	/* .ui-menubar .ui-menuitem-link {
+	
+	   font-size: 11px;
+	   font-weight:bold;
+	   background-color: #49980d;
+	   color:#ffffff;
+	   border-style: solid;
+       border-color: #357a00 #357a00 #357a00 #357a00;
+       width:100px; 
+       margin:1px;	
+       text-align:center !important;
+       align:center;
+       
+	}
+    */
+   .table-no-header thead {
+	    display: none;
+	}
+   
+    
+</style>  
+ 
+</h:head>
+<h:body > 
+	<h:outputScript id="handleDialog" target="body">
+		/* <![CDATA[ */
+			function handleDialog(xhr, status, args, dlg) {			
+				
+				if(!args.validationFailed) {
+					if(args.checkBusinessFail!='undefined')
+						if(!args.checkBusinessFail)					
+							dlg.hide();					
+				}
+			}
+			function clickButton(id){
+			  document.getElementById(id).click();
+			} 
+			function selectMenuitemLink(link) {
+				$("#menuSecurity").find(".ui-state-active").removeClass("ui-state-active");
+				$(link).addClass("ui-state-active");
+			}
+			var t;
+
+			function startTimer() {
+			   t = setTimeout("PF('statusDialog')", 1100);
+			}
+			
+			function stopTimer() {
+			   clearTimeout(t);
+			}
+			/* ]]> */
+		</h:outputScript>
+		
+	<p:layout fullPage="true" > 
+
+		<p:layoutUnit position="north"   resizable="true"  size="70"> 
+			<ui:include src="/include/login-user.xhtml" />
+		</p:layoutUnit> 
+		 
+		<p:layoutUnit position="center" gutter="0" >
+			<h:panelGrid width="100%" rendered="#{pfExceptionHandler.formattedStackTrace eq null or pfExceptionHandler.formattedStackTrace eq ''}">
+				<h:form>
+					<p:menubar id="menuBarId" >
+						<p:submenu label="C R M - SHOP" icon="ui-icon-cart"  >   
+				        	<p:menuitem value="Customer List"  url="#{loginBean.shopUser.customerPagePath}?faces-redirect=true" update="content"  ajax="true"  />
+				        	<p:menuitem value="Product List"   url="#{loginBean.shopUser.productPagePath}?faces-redirect=true" update="content"  ajax="true" />
+ 				        	<p:menuitem value="Order Detail"   url="#{loginBean.shopUser.orderPagePath}?faces-redirect=true" update="content"  ajax="true" />
+ 				         </p:submenu>
+				 		<p:submenu label=" A D M I N" icon="ui-icon-locked" style="text-align:center">  
+				        	<p:menuitem value="Sync Shop"   url="#{loginBean.shopUser.syncPagePath}?faces-redirect=true" update="content"  ajax="true" /> 
+ 				  		</p:submenu>
+					 </p:menubar>
+				</h:form>
+			</h:panelGrid>
+			
+			<h:panelGroup id="content" layout="block" style="width:100%">
+				<center>
+					<ui:insert name="body">Content</ui:insert>
+				</center>
+			</h:panelGroup>
+			<!-- FOR PROGRESS BAR LOADING -->
+			   <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+		 	    <f:facet name="start">
+			        <p:graphicImage value="/images/ajax-loading-bar.gif" />
+			    </f:facet>
+			</p:ajaxStatus>
+			<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="true" header="Loading.....">
+			    <p:graphicImage value="/images/ajax-loading-bar.gif" />
+			</p:dialog>  
+			 	 
+		 
+		</p:layoutUnit>
+		
+		<p:layoutUnit position="south" gutter="0"> 
+			<p:outputLabel value="Copyright © 2019 OneClickTech All rights reserved. " />
+		</p:layoutUnit> 	
+	</p:layout>
+</h:body>
+</html>
